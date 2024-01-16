@@ -20,6 +20,7 @@ const STATE = {
   CONNECTING: 1,
   CONNECTED: 2,
 };
+var logging = false;
 
 function TcpSocket(options: ?{ id: ?number }) {
   if (!(this instanceof TcpSocket)) {
@@ -57,7 +58,7 @@ function TcpSocket(options: ?{ id: ?number }) {
 util.inherits(TcpSocket, stream.Duplex);
 
 TcpSocket.prototype._debug = function () {
-  if (__DEV__) {
+  if (__DEV__ && logging) {
     const args = [].slice.call(arguments);
     args.unshift('socket-' + this._id);
     console.log.apply(console, args);
@@ -79,6 +80,7 @@ TcpSocket.prototype.connect = function (options, callback): TcpSocket {
     this.once('connect', callback);
   }
 
+  logging = options.logging || false;
   const host = options.host || 'localhost';
   let port = options.port || 0;
   const localAddress = options.localAddress;
